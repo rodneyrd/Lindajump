@@ -4,6 +4,8 @@ function Platform(x, y, type){
 
   this.x = ~~x;
   this.y = y;
+    this.width = globals.game.width/5;
+    this.height = globals.game.height/30;
   this.type = type;
   this.firstColor = '#FF8C00';
   this.secondColor = '#EEEE00';
@@ -27,13 +29,13 @@ Platform.prototype.draw = function(ctx)
   ctx.fillStyle = 'rgba(255, 255, 255, 1)';
   //it's important to change transparency to '1' before drawing the platforms, in other case they acquire last set transparency in Google Chrome Browser, and because circles in background are semi-transparent it's good idea to fix it. I forgot about that in my 10kApart entry, I think because Firefox and Safari change it by default
   var gradient = ctx.createRadialGradient(
-    this.x + (globals.platform.platformWidth/2), 
-    this.y + (globals.platform.platformHeight/2), 5, this.x + (globals.platform.platformWidth/2), 
-    this.y + (globals.platform.platformHeight/2), 45);
+    this.x + (this.width/2),
+    this.y + (this.height/2), 5, this.x + (this.width/2),
+    this.y + (this.height/2), 45);
   gradient.addColorStop(0, this.firstColor);
   gradient.addColorStop(1, this.secondColor);
   ctx.fillStyle = gradient;
-  ctx.fillRect(this.x, this.y, globals.platform.platformWidth, globals.platform.platformHeight);
+  ctx.fillRect(this.x, this.y, this.width, this.height);
   //drawing gradient inside rectangular platform
 };
 

@@ -1,81 +1,158 @@
-var width = 320,
-//width of the canvas
-  height = 500,
-//height of the canvas
+var Game = function () {
+    this.c = document.getElementById('c');
+    this.c.width = globals.game.width;
+    this.c.height = globals.game.height;
+    this.ctx = c.getContext('2d');
+    this.gamestate = true;
 
-  c = document.getElementById('c'), 
-//canvas itself 
+    this.gLoop = null;
+    this.menuLoop = null;
+    this.world = null;
+    this.player = null;
 
-  ctx = c.getContext('2d');
-//and two-dimensional graphic context of the
-//canvas, the only one supported by all 
-//browsers for now
-
-c.width = width;
-c.height = height;
-//setting canvas size 
-
-
-var clear = function(){
-  ctx.fillStyle = '#d0e7f9';
-//set active color to #d0e... (nice blue)
-//UPDATE - as 'Ped7g' noticed - using clearRect() in here is useless, we cover whole surface of the canvas with blue rectangle two lines below. I just forget to remove that line
-//ctx.clearRect(0, 0, width, height);
-//clear whole surface
-  ctx.beginPath();
-//start drawing
-  ctx.rect(0, 0, width, height);
-//draw rectangle from point (0, 0) to
-//(width, height) covering whole canvas
-  ctx.closePath();
-//end drawing
-  ctx.fill();
-//fill rectangle with active
-//color selected before
+    this.init();
 }
 
-var howManyCircles = 10, circles = [];
+Game.prototype = {
+    init: function() {
+        this.world = new World(this.c);
+        this.player = new Player();
+        this.player.setPosition(~~((globals.game.width-this.player.width)/2),  ~~((globals.game.height - this.player.height)));
+        this.GameLoop();
+        this.initListener();
+    },
+    checkCollision: function(e){
 
-for (var i = 0; i < howManyCircles; i++) 
-  circles.push([Math.random() * width, Math.random() * height, Math.random() * 100, Math.random() / 2]);
-//add information about circles into
-//the 'circles' Array. It is x & y positions, 
-//radius from 0-100 and transparency 
-//from 0-0.5 (0 is invisible, 1 no transparency)
+        //check every plaftorm
+        if (
+            (this.player.isFalling) &&
+                //only when this.player is falling
+                (this.player.X < e.x + globals.platform.platformWidth) &&
+                (this.player.X + this.player.width > e.x) &&
+                (this.player.Y + this.player.height > e.y) &&
+                (this.player.Y + this.player.height < e.y + globals.platform.platformHeight)
+        //and is directly over the platform
+            ) {
+            e.onCollide(this.player);
+        }
+    },
+    GameLoop: function()
+    {
+        var that = this;
+        this.world.clear();
+        this.world.drawCircles()
+        //this.world.moveCircles(5)
 
-var DrawCircles = function(){
-  for (var i = 0; i < howManyCircles; i++) {
-    ctx.fillStyle = 'rgba(255, 255, 255, ' + circles[i][3] + ')';
-//white color with transparency in rgba
-    ctx.beginPath();
-    ctx.arc(circles[i][0], circles[i][1], circles[i][2], 0, Math.PI * 2, true);
-//arc(x, y, radius, startAngle, endAngle, anticlockwise)
-//circle has always PI*2 end angle
-    ctx.closePath();
-    ctx.fill();
-  }
-}
+        if (this.player.isJumping) this.player.checkJump(this.world);
+        if (this.player.isFalling) this.player.checkFall();
+        if(this.player.isDead()) {
+            this.gamestate = false;
+            this.GameOver();
+        }
+        this.player.draw(this.ctx);
 
-  var MoveCircles = function(deltaY){
-  for (var i = 0; i < howManyCircles; i++) {
-    if (circles[i][1] - circles[i][2] > height) {
-//the circle is under the screen so we change
-//informations about it 
-      circles[i][0] = Math.random() * width;
-      circles[i][2] = Math.random() * 100;
-      circles[i][1] = 0 - circles[i][2];
-      circles[i][3] = Math.random() / 2;
-    } else {
-//move circle deltaY pixels down
-      circles[i][1] += deltaY;
+
+        this.world.platforms.forEach(function(platform, index){
+            that.checkCollision(platform);
+            //if platform is able to move
+            if (platform.isMoving) {
+                //and if is on the end of the screen
+                if (platform.x < 0) {
+                    platform.direction = 1;
+                    //switch direction and start moving in the opposite direction
+                } else if (platform.x > globals.game.width - globals.platform.platformWidth) {
+                    platform.direction = -1;
+                }
+                //with speed dependent on the index in platforms[] array (to avoid moving all the displayed platforms with the same speed, it looks ugly) and number of points
+                platform.x += platform.direction * (index / 2) * ~~(that.world.points / 100);
+            }
+            platform.draw(that.ctx);
+        });
+
+        this.world.drawPoints();
+        //go to another frame only when state is true
+        if (this.gamestate) this.gLoop = setTimeout(function(){
+            that.GameLoop();
+        }, 1000 / 50);
+
+    },
+    GameOver: function(){
+        that = this;
+        //set state to false
+
+        //stop calling another frame
+        clearTimeout(this.gLoop);
+        //wait for already called frames to be drawn and then clear everything and render text
+        this.world.clear();
+        this.ctx.fillStyle = "Black";
+        this.ctx.font = "10pt Arial";
+        this.ctx.fillText("GAME OVER", this.c.width / 2 - 60, this.c.height / 2 - 50);
+        this.ctx.fillText("YOUR SCORE : " + this.world.points + " meters. ", this.world.width / 2 - 60, this.world.height / 2 - 30);
+        this.ctx.fillText("Click to Start Again", this.world.width / 2 - 60, this.world.height / 2 + 100);
+
+        if (this.gamestate == false) this.menuLoop = setTimeout(function(){
+            that.GameOver();
+        },  50);
+
+    },
+    initListener: function(){
+        var that = this;
+
+        document.onmousemove = function(e){
+            //if mouse is on the left side of the this.player.
+            if (that.player.X + that.c.offsetLeft > e.pageX) {
+                that.player.moveLeft();
+                //or on right?
+            } else if (that.player.X + that.c.offsetLeft < e.pageX) {
+                that.player.moveRight();
+            }
+        }
+
+        window.onkeydown = function(event) {
+
+            var keycode;
+            if (window.event) keycode = window.event.keyCode;
+            else if (event) keycode = event.which;
+
+                switch(keycode){
+                    //left
+                    case 37:
+                        that.player.moveLeft();
+                        break;
+                    //up
+                    case 38:
+                        break;
+                    //right
+                    case 39:
+                        that.player.moveRight();
+                        break;
+                    //down
+                    case 40:
+                        break;
+                    case 32:
+                        that.player.jump();
+                        break;
+                    default:
+                        break;
+                }
+
+        };
+
+        //add mouse listeners
+        this.c.addEventListener("click", function on_click(e) {
+
+
+            if(that.gamestate == false){
+                that.gamestate = true;
+                clearTimeout(that.menuLoop);
+
+                that.world = new World(document.getElementById('c'));
+                that.player = new Player();
+                that.player.setPosition(~~((globals.game.width-that.player.width)/2),  ~~((globals.game.height - that.player.height)));
+                that.GameLoop();
+            }else{
+                //Game already started
+            }
+        }, false);
     }
-  }
-};
-
-var GameLoop = function(){
-  clear();
-  MoveCircles(5);
-  DrawCircles();
-  gLoop = setTimeout(GameLoop, 1000 / 50);
 }
-GameLoop();

@@ -1,21 +1,18 @@
   /**
    * Game Globals
    */
-
-    //width of the canvas 
-var width = 320,   
+  var width =globals.game.width,
     //height of the canvas       
-  	height = 500,  
+  	height = globals.game.height,
     //general loop
-  	gLoop,         
+  	gLoop, menuLoop,
     //canvas
   	c = document.getElementById('c'), 
     //canvas type
-    ctx = c.getContext('2d'); 
+    ctx = c.getContext('2d');
     c.width = width;
-    c.height = height;  
-    state = true;       
-
+    c.height = height;
+    gamestate = true;
 
 var checkCollision = function(e){
 
@@ -36,7 +33,7 @@ var checkCollision = function(e){
 
 var world = new World(document.getElementById('c'));
 var player = new Player(world);
-player.setPosition(~~((globals.game.swidth-player.width)/2),  ~~((globals.game.height - player.height)));
+player.setPosition(~~((globals.game.width-player.width)/2),  ~~((globals.game.height - player.height)));
 
 var GameLoop = function()
 {
@@ -47,7 +44,11 @@ var GameLoop = function()
     
   if (player.isJumping) player.checkJump(world);  
   if (player.isFalling) player.checkFall();   
-  if(player.isDead()) GameOver();
+  if(player.isDead()) {
+      gamestate = false;
+      clearTimeout(gLoop);
+      GameOver();
+  }
   player.draw(ctx);   
 
 
@@ -68,32 +69,35 @@ var GameLoop = function()
         platform.draw(ctx);
       });
 
+    world.drawPoints();
+    console.log("GameLoop function")
     //go to another frame only when state is true
-    if (state) gLoop = setTimeout(GameLoop, 1000 / 50);
+    if (gamestate) gLoop = setTimeout(GameLoop, 1000 / 50);
         
 }
 
 //GameOver screen
 var GameOver = function(){
-    state = false;
 //set state to false
-    clearTimeout(gLoop);
+
 //stop calling another frame
-    setTimeout(function(){
+                  console.log("GameOver function")
 //wait for already called frames to be drawn and then clear everything and render text
-        world.clear(); 
+        world.clear();
         ctx.fillStyle = "Black";
         ctx.font = "10pt Arial";
         ctx.fillText("GAME OVER", width / 2 - 60, height / 2 - 50);
-        ctx.fillText("YOUR RESULT:" + world.points, world.width / 2 - 60, world.height / 2 - 30);
-    }, 100);
+        ctx.fillText("YOUR SCORE : " + world.points + " meters. ", world.width / 2 - 60, world.height / 2 - 30);
+    console.log("GameOver function")
+    if (gamestate == false) menuLoop = setTimeout(GameOver,  1000);
+
 };
+//add mouse listeners
+c.addEventListener("click", on_click, false);
 
 
 
-
-
-document.onmousemove = function(e){
+  document.onmousemove = function(e){
   //if mouse is on the left side of the player.
   if (player.X + c.offsetLeft > e.pageX) {    
     player.moveLeft();
@@ -114,7 +118,9 @@ document.onkeyup = function(event) {
 
 
 
-GameLoop();
+  GameLoop();
+
+
 
 
 

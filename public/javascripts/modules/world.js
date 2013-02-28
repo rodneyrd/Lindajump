@@ -1,12 +1,10 @@
-function World (canvas, width, height) {
+function World (canvas) {
 
   this.canvas = canvas;
   this.ctx = canvas.getContext('2d');
 
-  if(width != null) this.width = width;
-  if(height != null) this.height = height;
-  this.width = globals.game.width;
-  this.height = globals.game.height;  
+  this.height = canvas.height;
+  this.width = canvas.width;
   this.points = globals.game.points;
 
   //cloud number
@@ -66,12 +64,11 @@ World.prototype.clear = function(){
   //change active color to black
   this.ctx.fillStyle = "Black";  
   this.ctx.fillStyle = '#d0e7f9';
-    //and add text in the left-bottom corner of the canvas
-  this.ctx.fillText("POINTS:" + this.points, 10, this.height-10);
+
   //start drawing
   this.ctx.beginPath();
   //draw rectangle 
-  this.ctx.rect(0, 0, width, height);
+  this.ctx.rect(0, 0, this.width, this.height);
   //end drawing
   this.ctx.closePath();
   //fill rectangle with active
@@ -91,6 +88,15 @@ World.prototype.drawCircles = function(){
     this.ctx.closePath();  
     this.ctx.fill();  
   } 
+}
+
+World.prototype.drawPoints = function(){
+
+    //this.ctx.fillText("POINTS:" + this.points, 10, this.height-10);
+    this.ctx.fillStyle = '#000';
+    this.ctx.font = 'bold 12px sans-serif';
+    this.ctx.textBaseline = 'bottom';
+    this.ctx.fillText("Meters : " + this.points, 10 , 20);
 }
 
 World.prototype.moveCircles = function(deltaY){

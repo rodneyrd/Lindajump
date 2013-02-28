@@ -4,7 +4,7 @@ var globals = {
     game: {
         points: 5,
         height: 500,
-        width: 320, 
+        width: (document.getElementById('c').width != null) ? document.getElementById('c').width: window.innerWidth,
         screenSize: [this.width, this.height]
     },
     player: {

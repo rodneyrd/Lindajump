@@ -53,7 +53,7 @@ Player.prototype.draw = function(ctx){
  Player.prototype.checkJump = function(world) { 
     var self = this;
     //if player is under about half of the screen - let him move    
-    if (self.Y > height*0.4) {        
+    if (self.Y > globals.game.height*0.4) {
       self.setPosition(self.X, self.Y - self.jumpSpeed); 
     //in other dont move player up, move platforms and circles down instead          
     } else {
@@ -140,7 +140,7 @@ Player.prototype.moveLeft = function(){
 
 Player.prototype.moveRight = function(){
     //check whether the object is inside the screen
-    if (this.X + this.width < width) {    
+    if (this.X + this.width < globals.game.width) {
         this.setPosition(this.X + 5, this.Y);
     }
 }
