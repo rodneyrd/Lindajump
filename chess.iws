@@ -17,7 +17,7 @@
     <file path="/main.html" changelist="1002dbeb-ab34-46de-8fb7-cfad79aca8cc" time="1362026305909" ignored="false" />
     <file path="/globals.js" changelist="1002dbeb-ab34-46de-8fb7-cfad79aca8cc" time="1362022265331" ignored="false" />
     <file path="/Platform.js" changelist="1002dbeb-ab34-46de-8fb7-cfad79aca8cc" time="1362022376802" ignored="false" />
-    <file path="/game-old.js" changelist="1002dbeb-ab34-46de-8fb7-cfad79aca8cc" time="1362028362664" ignored="false" />
+    <file path="/game-old.js" changelist="1002dbeb-ab34-46de-8fb7-cfad79aca8cc" time="1362029138114" ignored="false" />
     <file path="/Player.js" changelist="1002dbeb-ab34-46de-8fb7-cfad79aca8cc" time="1362027784444" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -168,7 +168,7 @@
           <file leaf-file-name="game-old.js" pinned="false" current="true" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/public/javascripts/game-old.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="90" column="100" selection-start="3412" selection-end="3412" vertical-scroll-proportion="0.43269232">
+                <state line="149" column="0" selection-start="5289" selection-end="5289" vertical-scroll-proportion="0.7355769">
                   <folding />
                 </state>
               </provider>
@@ -736,7 +736,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/public/javascripts/game-old.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="90" column="100" selection-start="3412" selection-end="3412" vertical-scroll-proportion="0.43269232">
+        <state line="149" column="0" selection-start="5289" selection-end="5289" vertical-scroll-proportion="0.7355769">
           <folding />
         </state>
       </provider>

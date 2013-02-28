@@ -98,6 +98,46 @@ Game.prototype = {
     initListener: function(){
         var that = this;
 
+        document.addEventListener("touchstart",touchHandler, true);
+        document.addEventListener("touchmove", touchHandler, true);
+        document.addEventListener("touchend", touchHandler, true);
+        document.addEventListener("touchcancel", touchHandler, true);
+
+        function touchHandler(e)
+        {
+            console.log("test")
+            var touches = e.changedTouches,
+                first = touches[0],
+                type = "";
+
+            console.log(e.type)
+            switch(e.type)
+            {
+                case "touchstart":
+                    type = "mousedown";
+                    that.player.jump();
+                    break;
+
+                case "touchmove":
+                    type="mousemove";
+
+                    //if mouse is on the left side of the this.player.
+                    if (that.player.X + that.c.offsetLeft > e.pageX) {
+                        that.player.moveLeft();
+                        //or on right?
+                    } else if (that.player.X + that.c.offsetLeft < e.pageX) {
+                        that.player.moveRight();
+                    }
+                    break;
+
+                case "touchend":
+                    type="mouseup";
+                    break;
+                default: return;
+            }
+
+        }
+
         document.onmousemove = function(e){
             //if mouse is on the left side of the this.player.
             if (that.player.X + that.c.offsetLeft > e.pageX) {
@@ -107,6 +147,7 @@ Game.prototype = {
                 that.player.moveRight();
             }
         }
+
 
         window.onkeydown = function(event) {
 
