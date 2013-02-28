@@ -1,0 +1,19 @@
+.container {
+    width:400px;
+    margin:0px auto;
+    text-align:center;
+}
+#c{
+    width: 400px;
+    min-height: 100px;
+    height: 100%;
+}
+a.no-style{
+    font-size: 14px;
+    line-height: 20px;
+    color: rgb(51, 51, 51);
+}
+a.no-style:hover{
+    color: rgb(0, 136, 204);
+    text-decoration: underline;
+}
