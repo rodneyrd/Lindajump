@@ -116,10 +116,10 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="world.js" pinned="false" current="false" current-in-tab="true">
+          <file leaf-file-name="world.js" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/public/javascripts/modules/world.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="6" column="28" selection-start="149" selection-end="149" vertical-scroll-proportion="0.14796548">
+                <state line="6" column="28" selection-start="149" selection-end="149" vertical-scroll-proportion="-4.8">
                   <folding />
                 </state>
               </provider>
@@ -143,10 +143,10 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="main.html" pinned="false" current="false" current-in-tab="false">
+          <file leaf-file-name="main.html" pinned="false" current="true" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/app/views/main.html">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="43" column="0" selection-start="2029" selection-end="2029" vertical-scroll-proportion="-17.5">
+                <state line="38" column="184" selection-start="1978" selection-end="1978" vertical-scroll-proportion="0.4382716">
                   <folding />
                 </state>
               </provider>
@@ -165,7 +165,7 @@
       </split-first>
       <split-second>
         <leaf>
-          <file leaf-file-name="game-old.js" pinned="false" current="true" current-in-tab="true">
+          <file leaf-file-name="game-old.js" pinned="false" current="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/public/javascripts/game-old.js">
               <provider selected="true" editor-type-id="text-editor">
                 <state line="149" column="0" selection-start="5289" selection-end="5289" vertical-scroll-proportion="0.7355769">
@@ -190,11 +190,11 @@
         <option value="$PROJECT_DIR$/public/javascripts/modules/objects/Platform.js" />
         <option value="$PROJECT_DIR$/public/javascripts/modules/globals.js" />
         <option value="$PROJECT_DIR$/app/views/Application/index.html" />
-        <option value="$PROJECT_DIR$/app/views/main.html" />
         <option value="$PROJECT_DIR$/public/javascripts/modules/objects/Player.js" />
         <option value="$PROJECT_DIR$/public/javascripts/game.js" />
         <option value="$PROJECT_DIR$/public/javascripts/modules/world.js" />
         <option value="$PROJECT_DIR$/public/javascripts/game-old.js" />
+        <option value="$PROJECT_DIR$/app/views/main.html" />
       </list>
     </option>
   </component>
@@ -699,20 +699,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/views/Application/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="46" selection-start="199" selection-end="199" vertical-scroll-proportion="-7.6923075">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/views/main.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="43" column="0" selection-start="2029" selection-end="2029" vertical-scroll-proportion="-17.5">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/public/javascripts/game.js">
       <provider selected="true" editor-type-id="text-editor">
         <state line="97" column="0" selection-start="2977" selection-end="2977" vertical-scroll-proportion="-6.4">
@@ -729,7 +715,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/public/javascripts/modules/world.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="28" selection-start="149" selection-end="149" vertical-scroll-proportion="0.14796548">
+        <state line="6" column="28" selection-start="149" selection-end="149" vertical-scroll-proportion="-4.8">
           <folding />
         </state>
       </provider>
@@ -737,6 +723,20 @@
     <entry file="file://$PROJECT_DIR$/public/javascripts/game-old.js">
       <provider selected="true" editor-type-id="text-editor">
         <state line="149" column="0" selection-start="5289" selection-end="5289" vertical-scroll-proportion="0.7355769">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/Application/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="46" selection-start="199" selection-end="199" vertical-scroll-proportion="-7.6923075">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/main.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="38" column="184" selection-start="1978" selection-end="1978" vertical-scroll-proportion="0.4382716">
           <folding />
         </state>
       </provider>
