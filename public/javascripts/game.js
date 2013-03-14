@@ -1,90 +1,132 @@
+/**
+ * General game class
+ * Create and run all game components
+ */ 
 var Game = function () {
+
+    /**
+     * Canvas   
+     * @public
+     */            
     this.c = document.getElementById('c');
-    console.log(globals.game.width)
-    console.log(globals.game.height)
-    this.c.width = globals.game.width;
-    this.c.height = globals.game.height;
+
+    /**
+     * Canvas context   
+     * @public
+     */      
     this.ctx = c.getContext('2d');
+
+    /**
+     * Game state (running/ended)
+     * @type {Boolean}  
+     * @public
+     */   
     this.gamestate = true;
 
+    /**
+     * Game timeout 
+     */   
     this.gLoop = null;
+
+    /**
+     * Pause menu timeout 
+     */        
     this.menuLoop = null;
+
+    /**
+     * World object  
+     * @type {World}  
+     * @public
+     */       
     this.world = null;
-    this.player = null;
+
+    /**
+     * Player object  
+     * @type {Player}  
+     * @public
+     */       
+    this.player = null; 
 
     this.init();
 }
 
 Game.prototype = {
+
+    /**
+     * Initialize all attributes 
+     */ 
     init: function() {
+        this.c.width = globals.game.width;
+        this.c.height = globals.game.height;   
         this.world = new World(this.c);
         this.player = new Player();
         this.player.setPosition(~~((globals.game.width-this.player.width)/2),  ~~((globals.game.height - this.player.height)));
         this.GameLoop();
         this.initListener();
     },
-    checkCollision: function(e){
 
-        //check every plaftorm
-        if (
-            (this.player.isFalling) &&
-                //only when this.player is falling
-                (this.player.X < e.x + globals.platform.platformWidth) &&
-                (this.player.X + this.player.width > e.x) &&
-                (this.player.Y + this.player.height > e.y) &&
-                (this.player.Y + this.player.height < e.y + globals.platform.platformHeight)
-        //and is directly over the platform
-            ) {
-            e.onCollide(this.player);
-        }
-    },
+    /**
+     * Run the game loop
+     */ 
     GameLoop: function()
     {
         var that = this;
-        this.world.clear();
-        this.world.drawCircles()
-        //this.world.moveCircles(5)
 
+        // Clear the canvas
+        this.world.clear();
+
+        // Draw the clouds
+        this.world.drawCircles()
+
+        // Check player state (Jumping/Falling)
         if (this.player.isJumping) this.player.checkJump(this.world);
         if (this.player.isFalling) this.player.checkFall();
-        if(this.player.isDead()) {
-            this.gamestate = false;
-            this.GameOver();
-        }
+
+        // Check player if player is dead
+        if(this.player.isDead()) this.GameOver();
+        
+        // Draw player
         this.player.draw(this.ctx);
 
-
+        // Set random position and moving state of each platform
         this.world.platforms.forEach(function(platform, index){
             that.checkCollision(platform);
-            //if platform is able to move
+            // If platform is able to move
             if (platform.isMoving) {
-                //and if is on the end of the screen
+                // And if is on the end of the screen
                 if (platform.x < 0) {
                     platform.direction = 1;
-                    //switch direction and start moving in the opposite direction
+                    // Switch direction and start moving in the opposite direction
                 } else if (platform.x > globals.game.width - globals.platform.platformWidth) {
                     platform.direction = -1;
                 }
-                //with speed dependent on the index in platforms[] array (to avoid moving all the displayed platforms with the same speed, it looks ugly) and number of points
+                // With speed dependent on the index in platforms[] array (to avoid moving all the displayed platforms with the same speed, it looks ugly) and number of points
                 platform.x += platform.direction * (index / 2) * ~~(that.world.points / 100);
             }
+            // Draw the platfrom
             platform.draw(that.ctx);
         });
 
+        // Draw score
         this.world.drawPoints();
-        //go to another frame only when state is true
+
+        // Go to another frame if the player is still alive
         if (this.gamestate) this.gLoop = setTimeout(function(){
             that.GameLoop();
         }, 1000 / 50);
-
     },
+
+    /**
+     * Run the game over loop
+     */     
     GameOver: function(){
         that = this;
-        //set state to false
 
-        //stop calling another frame
+        // Set state to false
+        this.gamestate = false;
+        // Stop calling another frame
         clearTimeout(this.gLoop);
-        //wait for already called frames to be drawn and then clear everything and render text
+        // Wait for already called frames to be drawn and then clear everything and render text
         this.world.clear();
         this.ctx.fillStyle = "Black";
         this.ctx.font = "10pt Arial";
@@ -97,6 +139,10 @@ Game.prototype = {
         },  50);
 
     },
+
+    /**
+     * Set the controls listener
+     */       
     initListener: function(){
         var that = this;
 
@@ -107,12 +153,10 @@ Game.prototype = {
 
         function touchHandler(e)
         {
-            console.log("test")
             var touches = e.changedTouches,
                 first = touches[0],
                 type = "";
-
-            console.log(e.type)
+            
             switch(e.type)
             {
                 case "touchstart":
@@ -193,9 +237,29 @@ Game.prototype = {
                 that.player.setPosition(~~((globals.game.width-that.player.width)/2),  ~~((globals.game.height - that.player.height)));
                 that.GameLoop();
             }else{
-                //Game already started
+                // Game already started
                 that.player.jump();
             }
         }, false);
-    }
+    }    
+
+    /**
+     * Check the collision between player and platforms
+     */ 
+    checkCollision: function(e){
+
+        // Check every plaftorm
+        if (
+            (this.player.isFalling) &&
+                // Only when this.player is falling
+                (this.player.X < e.x + globals.platform.platformWidth) &&
+                (this.player.X + this.player.width > e.x) &&
+                (this.player.Y + this.player.height > e.y) &&
+                (this.player.Y + this.player.height < e.y + globals.platform.platformHeight)
+            // And is directly over the platform
+            ) {
+            e.onCollide(this.player);
+        }
+    },
+
 }

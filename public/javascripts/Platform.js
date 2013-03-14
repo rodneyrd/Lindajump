@@ -11,7 +11,6 @@ function Platform(x, y, type){
   this.secondColor = '#EEEE00';
   //checks if platform will be able to move (1) or not (0)
   this.isMoving = ~~(Math.random() * 2);
-  console.log(this.isMoving)
   //set direction
   this.direction= ~~(Math.random() * 2) ? -1 : 1;
 
