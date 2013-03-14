@@ -4,11 +4,11 @@ var globals = {
     game: {
         points: 5,
         height: 500,
-        width: (document.getElementById('c').width != null) ? document.getElementById('c').width: window.innerWidth,
+        width: 300,
         screenSize: [this.width, this.height]
     },
     player: {
-        sprite: "../public/images/angel.png",
+        sprite: "../images/angel.png",
         height: 95,
         width: 65, 
     },    

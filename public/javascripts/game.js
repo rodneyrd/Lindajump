@@ -1,5 +1,7 @@
 var Game = function () {
     this.c = document.getElementById('c');
+    console.log(globals.game.width)
+    console.log(globals.game.height)
     this.c.width = globals.game.width;
     this.c.height = globals.game.height;
     this.ctx = c.getContext('2d');
