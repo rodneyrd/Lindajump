@@ -1,158 +1,258 @@
-function Player () {
-    //attributes
+/**
+ * Player  class
+ */ 
+var Player = function () {
+
+    /**
+     * Player image  
+     * @type {Image}  
+     * @public
+     */      
     this.image = new Image();
-    this.image.src = globals.player.sprite;
+
+    /**
+     * Player width  
+     * @type {int}  
+     * @public
+     */  
     this.width = globals.player.width;
+
+    /**
+     * Player height  
+     * @type {int}  
+     * @public
+     */      
     this.height =  globals.player.height;
+
+    /**
+     * Player X position   
+     * @type {int}  
+     * @public
+     */       
     this.X = 0;
+
+    /**
+     * Player Y position   
+     * @type {int}  
+     * @public
+     */      
     this.Y = 0;
 
-    //number of frames indexed from zero
+    /**
+     * Frame number   
+     * @type {int}  
+     * @public
+     */  
     this.frames = 1;
-    //start from which frame
-    this.actualFrame = 0;    
+
+    /**
+     * Starting frame   
+     * @type {int}  
+     * @public
+     */  
+    this.actualFrame = 0;  
+
+    /**
+     * Interval to between the different frames   
+     * @type {int}  
+     * @public
+     */  
     this.interval = 0;
 
-    //new attributes  
-    this.isJumping = false;  
+    /**
+     * Jumping state   
+     * @type {Boolean}  
+     * @public
+     */   
+    this.isJumping = false; 
+
+    /**
+     * Falling state   
+     * @type {Boolean}  
+     * @public
+     */  
     this.isFalling = false;  
-    //state of the object described by bool variables - is it rising or falling?        
-    this.jumpSpeed = 0;  
+
+    /**
+     * Jump speed   
+     * @type {int}  
+     * @public
+     */        
+    this.jumpSpeed = 0;
+
+    /**
+     * Fall state   
+     * @type {int}  
+     * @public
+     */  
     this.fallSpeed = 0;  
+
+    // Init player
+    this.init();
 }
- 
 
-Player.prototype.setPosition = function(x, y) {
-    this.X = x;
-    this.Y = y;
-};
+Player.prototype = {
 
-Player.prototype.draw = function(ctx){
+    /**
+     * Initializes game attributes 
+     */ 
+    init: function() {
+          this.image.src = globals.player.sprite;
+    },
 
-    try {
-        //cutting source image and pasting it into destination one, 
-        //drawImage(Image Object, source X, source Y, source Width, source Height, destination X (X position), destination Y (Y position), Destination width, Destination height)
-        ctx.drawImage(this.image, 0, this.height * this.actualFrame, this.width, this.height, this.X, this.Y, this.width, this.height);
+    /**
+     * Sets player's position 
+     */ 
+    setPosition: function(x, y) {
+        this.X = x;
+        this.Y = y;        
+    },
+
+    /**
+     * Draw  player 
+     */ 
+    draw: function(ctx) {
+
+        // Displays player image with right frame and position already set
+        try {                    
+            ctx.drawImage(this.image, 0, this.height * this.actualFrame, this.width, this.height, this.X, this.Y, this.width, this.height);
         } catch (e) {
-      alert(e)
-    }
-    if (this.interval == 4 ){
-      if (this.actualFrame == this.frames) {
-        this.actualFrame = 0;
-      } else {
-        this.actualFrame++;
-      }
-      this.interval = 0;
-    }
-    this.interval++;
-}
+            console.log(e)
+        }
 
-/**
- * when 'jumping' action was initiated by jump() method, initiative is taken by this one.
- */
- Player.prototype.checkJump = function(world) { 
-    var self = this;
-    //if player is under about half of the screen - let him move    
-    if (self.Y > globals.game.height*0.4) {
-      self.setPosition(self.X, self.Y - self.jumpSpeed); 
-    //in other dont move player up, move platforms and circles down instead          
-    } else {
-      //clouds are in the background, further than platforms and player, so we will move it with half speed    
-      world.moveCircles(self.jumpSpeed * 0.5);
-
-
-      //increase points 
-      if (self.jumpSpeed > 10) {
-        world.points++; //here!
-      }
-  
-      world.platforms.forEach(function(platform, ind){
-          platform.y += self.jumpSpeed;
-    
-          //if platform moves outside the screen, we will generate another one on the top
-          if (platform.y > globals.game.height) { 
-
-              var type = ~~(Math.random() * 5);
-
-              if (type == 0){
-                type = 1;
-              } else{                               
-                type = 0;
-              }  
-                  
-              //Generate a new platform
-              world.platforms[ind] = new Platform(
-                Math.random() * (globals.game.width - globals.platform.platformWidth), 
-                platform.y - globals.game.height, 
-                type);  
-             
+        // Changes the frame each 4 drawing method called
+        if (this.interval == 4 ){
+          if (this.actualFrame == this.frames) {
+            this.actualFrame = 0;
+          } else {
+            this.actualFrame++;
           }
+          this.interval = 0;
+        }
+        this.interval++;        
+    },    
 
-      });
-    }
+    /**
+     * Actions while the player is jumping 
+     */ 
+    checkJump: function(world) {
+
+        var self = this;
+
+        // If player is under about half of the screen   
+        if (self.Y > globals.game.height*0.4) {
+          self.setPosition(self.X, self.Y - self.jumpSpeed); 
+        // Move platforms and circles, player is about more than half of the screen          
+        } else {
     
+          world.moveCircles(self.jumpSpeed * 0.5);
+
+          // Increase points 
+          if (self.jumpSpeed > 10) {
+            world.points++;
+          }
+      
+          // Generate a new platform at the top if one move outside the screen 
+          world.platforms.forEach(function(platform, ind){
+
+              platform.y += self.jumpSpeed;
     
-    self.jumpSpeed--;
-    if (self.jumpSpeed == 0) {
-        self.isJumping = false;
-        self.isFalling = true;
-        self.fallSpeed = 1;
-    }
+              if (platform.y > globals.game.height) { 
 
-}
-/**
- * same situation as in checkJump()
- */
-Player.prototype.isDead = function(){
-    //check if the object meets the bottom of the screen, if not just change the position and increase fallSpeed (simulation of gravity acceleration)...
-    if (this.Y > globals.game.height - this.height) return true
-    else return false;       
-        //alert("YOU LOSE!")
+                  // Set the new platform type randomly 
+                  var type = ~~(Math.random() * 5);
 
-    }
-/**
- * same situation as in checkJump()
- */
-Player.prototype.checkFall = function(){
-    //check if the object meets the bottom of the screen, if not just change the position and increase fallSpeed (simulation of gravity acceleration)...
-    if (this.Y < globals.game.height - this.height) {        
-        this.setPosition(this.X, this.Y + this.fallSpeed);
-        this.fallSpeed++;
-    } else {
-        //..if yes - bounce
-        this.fallStop();
-    }
-}
+                  if (type == 0){
+                    type = 1;
+                  } else{                               
+                    type = 0;
+                  }  
+                      
+                  // Re-generate a new platform
+                  world.platforms[ind] = new Platform(
+                    Math.random() * (globals.game.width - globals.platform.platformWidth), 
+                    platform.y - globals.game.height, 
+                    type);  
+                 
+              }
 
-Player.prototype.fallStop = function(){
-    //stop falling, start jumping again
-    this.isFalling = false;
-    this.fallSpeed = 0;    
-    this.jump();    
-}
-
-Player.prototype.moveLeft = function(){
-    //check whether the object is inside the screen
-    if (this.X > 0) {    
-        this.setPosition(this.X - 5, this.Y);
-    }
-}
-
-Player.prototype.moveRight = function(){
-    //check whether the object is inside the screen
-    if (this.X + this.width < globals.game.width) {
-        this.setPosition(this.X + 5, this.Y);
-    }
-}
-
-Player.prototype.jump = function() {
-    //initiation of the jump
-    //if objects isn't currently jumping or falling (preventing of 'double jumps', or bouncing from the air
-    if (!this.isJumping && !this.isFalling) {        
-        // initial velocity
-        this.fallSpeed = 0;
-        this.isJumping = true;
-        this.jumpSpeed = 14;
+          });
+        }
         
-    }
+        
+        self.jumpSpeed--;
+        if (self.jumpSpeed == 0) {
+            self.isJumping = false;
+            self.isFalling = true;
+            self.fallSpeed = 1;
+        }        
+    },  
+
+    /**
+     * Checks player is not outise the screen
+     */ 
+    isDead: function() {
+        if (this.Y > globals.game.height - this.height) return true
+        else return false;    
+    },  
+
+    /**
+     * Actions while the player is falling  
+     */ 
+    checkFall: function() {
+        // Checks if the object meets the bottom of the screen, if not just change the position and increase fallSpeed (simulation of gravity acceleration)...
+        if (this.Y < globals.game.height - this.height) {        
+            this.setPosition(this.X, this.Y + this.fallSpeed);
+            this.fallSpeed++;
+        } else {
+            //..if yes - bounce
+            this.fallStop();
+        }        
+    },        
+
+    /**
+     * Stops the falling  
+     */ 
+    fallStop: function(){
+        // Stop falling, start jumping again
+        this.isFalling = false;
+        this.fallSpeed = 0;    
+        this.jump();    
+    },
+
+    /**
+     * Moves player to the left  
+     */ 
+    moveLeft: function(){
+        // Checks whether the object is inside the screen
+        if (this.X > 0) {    
+            this.setPosition(this.X - 5, this.Y);
+        }
+    },
+
+    /**
+     * Moves player to the right  
+     */ 
+    moveRight: function(){
+        // Checks whether the object is inside the screen
+        if (this.X + this.width < globals.game.width) {
+            this.setPosition(this.X + 5, this.Y);
+        }
+    },
+
+    /**
+     * Init the jump   
+     */ 
+    jump: function() {
+        
+        // Checks player isn't currently jumping or falling
+        if (!this.isJumping && !this.isFalling) {        
+            // initial velocity
+            this.fallSpeed = 0;
+            this.isJumping = true;
+            this.jumpSpeed = 14;
+            
+        }
+    }     
+
 }
