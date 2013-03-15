@@ -53,7 +53,7 @@ var Game = function () {
 Game.prototype = {
 
     /**
-     * Initialize all attributes 
+     * Initialize game attributes 
      */ 
     init: function() {
         this.c.width = globals.game.width;
@@ -241,7 +241,7 @@ Game.prototype = {
                 that.player.jump();
             }
         }, false);
-    }    
+    },    
 
     /**
      * Check the collision between player and platforms
@@ -260,6 +260,6 @@ Game.prototype = {
             ) {
             e.onCollide(this.player);
         }
-    },
+    }
 
 }
