@@ -1,4 +1,6 @@
-
+/**
+ * Game configuration
+ */ 
 var globals = {
 
     game: {
