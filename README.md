@@ -2,7 +2,7 @@
 Linda Jump
 ==============================================
 
-Starting building a knowledge in the HTML5 game development by a "Doodle Jump" like, what else?
+Homemade "Doodle Jump" game like
 
 Current Maintainer:   
 
